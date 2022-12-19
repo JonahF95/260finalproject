@@ -114,7 +114,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Quality Control"]},{"type":"character","attributes":{},"value":["A new article created using the Distill format.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Jonah Fisher"]},{"type":"character","attributes":{},"value":["https://github.com/JonahF95"]},{"type":"character","attributes":{},"value":["Harvard T.H. Chan Department of Biostatistics"]},{"type":"character","attributes":{},"value":["https://www.hsph.harvard.edu/biostatistics/"]}]}]},{"type":"character","attributes":{},"value":["2022-12-19"]},{"type":"character","attributes":{},"value":["distill::distill_article"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Quality Control"]},{"type":"character","attributes":{},"value":["A new article created using the Distill format.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Jonah Fisher"]},{"type":"character","attributes":{},"value":["https://github.com/JonahF95"]},{"type":"character","attributes":{},"value":["Harvard T.H. Chan Department of Biostatistics"]},{"type":"character","attributes":{},"value":["https://www.hsph.harvard.edu/biostatistics/"]}]}]},{"type":"character","attributes":{},"value":["2022-12-19"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float","css","self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[6]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["toc-styles.css"]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2090,6 +2090,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
+  <link rel="stylesheet" href="toc-styles.css" type="text/css"/>
 
 </head>
 
@@ -2113,6 +2114,9 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <a href="about.html">About</a>
 <a href="getdata.html">Data Acquisition</a>
 <a href="qc.html">Quality Control</a>
+<a href="https://github.com/JonahF95">
+<i class="fab fa-github" aria-hidden="true"></i>
+</a>
 <a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
 </div>
 </nav>
@@ -2135,6 +2139,23 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#sex-check" id="toc-sex-check">Sex check</a></li>
+<li><a href="#methylation-intensity" id="toc-methylation-intensity">Methylation intensity</a></li>
+<li><a href="#average-detection-p-failure" id="toc-average-detection-p-failure">Average detection P failure</a></li>
+<li><a href="#check-genotyping-agreement" id="toc-check-genotyping-agreement">Check genotyping agreement</a></li>
+<li><a href="#qc-with-beta-methylation-matrix" id="toc-qc-with-beta-methylation-matrix">QC with beta methylation matrix</a>
+<ul>
+<li><a href="#cell-proportions" id="toc-cell-proportions">Cell proportions</a></li>
+<li><a href="#principal-components" id="toc-principal-components">Principal components</a></li>
+<li><a href="#pcs-by-slide" id="toc-pcs-by-slide">PCS by slide</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fread.html'>fread</a></span><span class='op'>(</span><span class='st'>"samplesheet.csv"</span><span class='op'>)</span></span>
@@ -2188,7 +2209,7 @@ between reported and observed</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"bottom"</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/check%20reported%20sex-1.png" width="624" /></p>
+<p><img src="qc_files/figure-html5/check_reported_sex-1.png" width="624" /></p>
 </div>
 <h2 id="methylation-intensity">Methylation intensity</h2>
 <div class="layout-chunk" data-layout="l-body">
@@ -2198,7 +2219,7 @@ between reported and observed</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Methylated intensity"</span>, y <span class='op'>=</span> <span class='st'>"Unmethylated intensity"</span>,</span>
 <span>       title <span class='op'>=</span> <span class='st'>"Median intensities on log2 scale"</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/methylation%20intensity-1.png" width="624" /></p>
+<p><img src="qc_files/figure-html5/methylation_intensity-1.png" width="624" /></p>
 </div>
 <h2 id="average-detection-p-failure">Average detection P failure</h2>
 <div class="layout-chunk" data-layout="l-body">
@@ -2207,7 +2228,7 @@ between reported and observed</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"black"</span>, fill <span class='op'>=</span> <span class='st'>"grey"</span>, bins <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Average probe failure for sample"</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/detp%20fail-1.png" width="624" /></p>
+<p><img src="qc_files/figure-html5/detp_fail-1.png" width="624" /></p>
 </div>
 <h2 id="check-genotyping-agreement">Check genotyping agreement</h2>
 <p>The following function uses the expression from SNP probes to infer genotypes
@@ -2275,7 +2296,7 @@ general expression principal component</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"bottom"</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/plot%20pcs-1.png" width="624" /></p>
+<p><img src="qc_files/figure-html5/plot_pcs-1.png" width="624" /></p>
 </div>
 <h2 id="pcs-by-slide">PCS by slide</h2>
 <p>The technical replicate pairs are plated next to each other which means
@@ -2291,7 +2312,7 @@ to be artificially higher than concordance between different plated pairs.</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"Slide"</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/pcs%20with%20slide-1.png" width="624" /></p>
+<p><img src="qc_files/figure-html5/pcs_with_slide-1.png" width="624" /></p>
 </div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
