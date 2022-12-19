@@ -1,0 +1,159 @@
+---
+title: "Quality Control"
+description: |
+  A new article created using the Distill format.
+author:
+  - name: Jonah Fisher
+    url: https://github.com/JonahF95
+    affiliation: Harvard T.H. Chan Department of Biostatistics
+    affiliation_url: https://www.hsph.harvard.edu/biostatistics/
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = T)
+
+library(tidyverse)
+library(data.table)
+library(ewastools)
+library(ggsci)
+library(matrixStats)
+
+theme_set(theme_bw())
+```
+
+
+```{r load in data}
+dat <- fread("samplesheet.csv")
+
+if(!dir.exists("pp")){
+  dir.create("pp")
+}
+```
+
+```{r read in idats, warning = F}
+idats <- list.files("idats/", full.names = T, pattern = "\\.idat.gz$") %>%
+  str_remove("_(Grn|Red)\\.idat\\.gz") %>%
+  unique 
+
+indmatch <- match(dat[, id], idats %>% str_extract("GSM[\\d]*"))
+idats <- idats[indmatch]
+
+meth <- read_idats(idats) %>% detectionP
+stopifnot(dat[, id] == str_extract(meth$meta$sample_id, "GSM[\\d]*"))
+saveRDS(meth, "pp/meth.rds")
+```
+
+```{r preprocess}
+#Get SNP probes for genotyping
+mani <- ewastools:::manifest_450K
+snps <- mani[probe_type == "rs", probe_id]
+geno <- call_genotypes(meth %>% mask(0.01) %>% dont_normalize %>% .[snps,])
+
+dat[, c("x", "y") := check_sex(meth)]
+
+dat[, missing := colMeans(meth$detP, na.rm = T)]
+
+dat[, u := colMedians(meth$U, na.rm = T) %>% log2]
+dat[, m := colMedians(meth$M, na.rm = T) %>% log2]
+```
+
+## Sex check
+
+Check that reported biological sex is concordant with methylation chromosome
+intensity. Below plot shows that this is the case and that there are no issues
+between reported and observed
+
+```{r check reported sex}
+ggplot(dat, aes(x = x, y = y, color = sex)) +
+  geom_point(size = 1.5) +
+  labs(x = "X chromosome intensity", y= "Y chromosome intensity", color = "Reported sex") +
+  theme(legend.position = "bottom") +
+  scale_color_aaas()
+```
+
+## Methylation intensity
+
+```{r methylation intensity}
+ggplot(dat, aes(x = m, y = u)) +
+  geom_point() + 
+  labs(x = "Methylated intensity", y = "Unmethylated intensity",
+       title = "Median intensities on log2 scale")
+```
+
+## Average detection P failure
+
+```{r detp fail}
+ggplot(dat, aes(x = missing)) +
+  geom_histogram(color = "black", fill = "grey", bins = 4) +
+  labs(x = "Average probe failure for sample")
+```
+
+## Check genotyping agreement
+
+The following function uses the expression from SNP probes to infer genotypes
+and check for genetic relatedness. We see that 3 of our technical replicate
+pairs appear to be duplicates of the other 3 replicate pairs. They are in fact 
+from **monozygotic twins** and not from the same individual which is why
+it looks like we erroneously have duplicate samples listed as from different 
+people.
+
+```{r genotype agreement}
+check_snp_agreement(geno, dat[, num], dat[, id])
+
+```
+
+# QC with beta methylation matrix
+
+```{r get beta}
+beta <- meth %>% dont_normalize()
+```
+
+
+## Cell proportions
+
+```{r cell type proportions}
+cells <- estimateLC(beta, ref = "Salas")
+cellpc1 <- prcomp(cells)$x[, 1]
+dat[, cellpc := cellpc1]
+```
+
+## Principal components
+
+```{r pcs on beta}
+whichna <- which(is.na(beta), arr.ind = T)
+beta[whichna] <- rowMeans(beta, na.rm = T)[whichna[, 1]]
+pcs <- beta %>% t %>% prcomp
+dat <- data.table(dat, pcs$x[, 1:5])
+```
+
+Surprisingly no real relationship in the cell pell principal component and 
+general expression principal component
+
+```{r plot pcs}
+ggplot(dat, aes(PC1, PC2, 
+                color = cut(cellpc1, 3) %>% as.factor %>% as.integer %>% as.factor)) +
+  geom_point() +
+  labs(color = "Tertile of cell PC") +
+  theme(legend.position = "bottom") +
+  scale_color_aaas()
+```
+
+## PCS by slide
+
+The technical replicate pairs are plated next to each other which means
+they aren't subject to batch effects as much. This can be good or bad depending
+on how you look at it. It will make the concordance between these pairs
+to be artificially higher than concordance between different plated pairs.
+
+```{r pcs with slide}
+dat[, slide := tstrsplit(colnames(beta), "_", keep = 2)]
+
+ggplot(dat, aes(x = PC1, y = PC2, color = as.factor(slide))) +
+  geom_point() +
+  labs(color = "Slide") +
+  scale_color_aaas()
+```
+

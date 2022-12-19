@@ -1,0 +1,100 @@
+---
+title: "Get Methylation Data"
+description: |
+  A new article created using the Distill format.
+author:
+  - name: Jonah Fisher
+    url: https://github.com/JonahF95
+    affiliation: Harvard T.H. Chan Department of Biostatistics
+    affiliation_url: https://www.hsph.harvard.edu/biostatistics/
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(data.table)
+library(rvest)
+```
+
+# Get data
+
+## Read in html page for sample list and pull replicate pairs
+
+```{r get data together}
+url <- "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE61496"
+l <- read_html(url)
+l <- l %>% html_text %>% str_split("\n") %>% unlist
+idx <- str_detect(l, "_[A|B]") %>% which
+
+dat <- data.table(
+  id = l[idx - 1],
+  num = l[idx]
+)
+
+dat[, c("num", "orig") := tstrsplit(num, "_")]
+setkey(dat, num)
+```
+
+## Get urls for raw files
+
+There's a similar FTP address for the files that we can plug into a looping function
+which takes the GSM identifier of the file and downloads the corresponding idat
+
+```{r get idats}
+if(!dir.exists("idats")){
+  dir.create("idats")
+}
+
+#Where this series is located
+repourl <- "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1506nnn/"
+
+for(i in dat[, id]){
+  #Need to grab more info on name of sample to download
+  ftplines <- paste0(repourl, i, "/suppl/") %>% readLines() 
+  
+  #Get red and green idat file locations
+  idatnames <- ftplines[str_detect(ftplines, "\\.idat\\.gz")] %>% tstrsplit('\\"', keep = 2) %>% unlist
+    paste0(repourl, i, "/suppl/", idatnames[[1]]) %>% 
+    download.file(destfile = paste0("idats/",idatnames[[1]]))
+    
+    paste0(repourl, i, "/suppl/", idatnames[[2]]) %>% 
+    download.file(destfile = paste0("idats/",idatnames[[2]]))
+}
+```
+
+## Pull information on biological sex for qc check
+
+All samples for this study have have bio sex listed on the website after a uniform pattern
+of "sex, 1=m, 2=f: [number]" which we can use to match to web scraped results.  
+
+```{r}
+s <- readLines("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1506327")
+biosex <- map(dat[, id], function(acc){
+  readLines(paste0("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=", acc)) %>%
+  str_extract("sex, 1=m, 2=f: \\d") %>%
+  .[!is.na(.)] %>% 
+  str_split("") %>% 
+  unlist() %>% 
+  tail(n=1)
+})
+
+dat[, sex := c("m", "f")[unlist(biosex) %>% as.numeric]]
+
+fwrite(dat, "samplesheet.csv")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

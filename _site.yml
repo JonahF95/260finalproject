@@ -1,0 +1,16 @@
+name: "260finalproject"
+title: "Capstone Project: BST 260"
+description: |
+  Capstone Project: BST 260
+output_dir: "docs"
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "Data Acquisition"
+      href getdata.rmd
+    - text: "Quality Control"
+      href qc.rmd
+output: distill::distill_article
