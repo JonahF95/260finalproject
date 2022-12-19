@@ -88,33 +88,29 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
   <!--radix_placeholder_meta_tags-->
-  <title>Capstone Project: BST 260: Quality Control</title>
+  <title>Capstone Project: BST 260: About this site</title>
 
-  <meta property="description" itemprop="description" content="A new article created using the Distill format."/>
+  <meta property="description" itemprop="description" content="Some additional details about the website"/>
 
 
-  <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2022-12-19"/>
-  <meta property="article:created" itemprop="dateCreated" content="2022-12-19"/>
-  <meta name="article:author" content="Jonah Fisher"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Capstone Project: BST 260: Quality Control"/>
+  <meta property="og:title" content="Capstone Project: BST 260: About this site"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="A new article created using the Distill format."/>
+  <meta property="og:description" content="Some additional details about the website"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Capstone Project: BST 260"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Capstone Project: BST 260: Quality Control"/>
-  <meta property="twitter:description" content="A new article created using the Distill format."/>
+  <meta property="twitter:title" content="Capstone Project: BST 260: About this site"/>
+  <meta property="twitter:description" content="Some additional details about the website"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Quality Control"]},{"type":"character","attributes":{},"value":["A new article created using the Distill format.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Jonah Fisher"]},{"type":"character","attributes":{},"value":["https://github.com/JonahF95"]},{"type":"character","attributes":{},"value":["Harvard T.H. Chan Department of Biostatistics"]},{"type":"character","attributes":{},"value":["https://www.hsph.harvard.edu/biostatistics/"]}]}]},{"type":"character","attributes":{},"value":["2022-12-19"]},{"type":"character","attributes":{},"value":["distill::distill_article"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description"]}},"value":[{"type":"character","attributes":{},"value":["About this site"]},{"type":"character","attributes":{},"value":["Some additional details about the website"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2098,7 +2094,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Quality Control","description":"A new article created using the Distill format.","authors":[{"author":"Jonah Fisher","authorURL":"https://github.com/JonahF95","affiliation":"Harvard T.H. Chan Department of Biostatistics","affiliationURL":"https://www.hsph.harvard.edu/biostatistics/","orcidID":""}],"publishedDate":"2022-12-19T00:00:00.000-05:00","citationText":"Fisher, 2022"}
+{"title":"About this site","description":"Some additional details about the website","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2125,178 +2121,15 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Quality Control</h1>
+<h1>About this site</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>A new article created using the Distill format.</p></p>
+<p><p>Some additional details about the website</p></p>
 </div>
 
-<div class="d-byline">
-  Jonah Fisher <a href="https://github.com/JonahF95" class="uri">https://github.com/JonahF95</a> (Harvard T.H. Chan Department of Biostatistics)<a href="https://www.hsph.harvard.edu/biostatistics/" class="uri">https://www.hsph.harvard.edu/biostatistics/</a>
-  
-<br/>2022-12-19
-</div>
 
 <div class="d-article">
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fread.html'>fread</a></span><span class='op'>(</span><span class='st'>"samplesheet.csv"</span><span class='op'>)</span></span>
-<span></span>
-<span><span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.exists</a></span><span class='op'>(</span><span class='st'>"pp"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span></span>
-<span>  <span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span><span class='op'>(</span><span class='st'>"pp"</span><span class='op'>)</span></span>
-<span><span class='op'>}</span></span></code></pre>
-</div>
-</div>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='st'>"pp/meth.rds"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span></span>
-<span>  <span class='va'>idats</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span><span class='op'>(</span><span class='st'>"idats/"</span>, full.names <span class='op'>=</span> <span class='cn'>T</span>, pattern <span class='op'>=</span> <span class='st'>"\\.idat.gz$"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
-<span>    <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_remove.html'>str_remove</a></span><span class='op'>(</span><span class='st'>"_(Grn|Red)\\.idat\\.gz"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
-<span>    <span class='va'>unique</span> </span>
-<span></span>
-<span>  <span class='va'>indmatch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/match.html'>match</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span>, <span class='va'>idats</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_extract.html'>str_extract</a></span><span class='op'>(</span><span class='st'>"GSM[\\d]*"</span><span class='op'>)</span><span class='op'>)</span></span>
-<span>  <span class='va'>idats</span> <span class='op'>&lt;-</span> <span class='va'>idats</span><span class='op'>[</span><span class='va'>indmatch</span><span class='op'>]</span></span>
-<span></span>
-<span>  <span class='va'>meth</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/read_idats.html'>read_idats</a></span><span class='op'>(</span><span class='va'>idats</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>detectionP</span></span>
-<span>  <span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span> <span class='op'>==</span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_extract.html'>str_extract</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>meta</span><span class='op'>$</span><span class='va'>sample_id</span>, <span class='st'>"GSM[\\d]*"</span><span class='op'>)</span><span class='op'>)</span></span>
-<span>  <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>saveRDS</a></span><span class='op'>(</span><span class='va'>meth</span>, <span class='st'>"pp/meth.rds"</span><span class='op'>)</span></span>
-<span><span class='op'>}</span></span></code></pre>
-</div>
-</div>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#Get SNP probes for genotyping</span></span>
-<span><span class='va'>meth</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='st'>"pp/meth.rds"</span><span class='op'>)</span></span>
-<span><span class='va'>mani</span> <span class='op'>&lt;-</span> <span class='fu'>ewastools</span><span class='fu'>:::</span><span class='va'>manifest_450K</span></span>
-<span><span class='va'>snps</span> <span class='op'>&lt;-</span> <span class='va'>mani</span><span class='op'>[</span><span class='va'>probe_type</span> <span class='op'>==</span> <span class='st'>"rs"</span>, <span class='va'>probe_id</span><span class='op'>]</span></span>
-<span><span class='va'>geno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/call_genotypes.html'>call_genotypes</a></span><span class='op'>(</span><span class='va'>meth</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/detectionP.html'>mask</a></span><span class='op'>(</span><span class='fl'>0.01</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>dont_normalize</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>.</span><span class='op'>[</span><span class='va'>snps</span>,<span class='op'>]</span><span class='op'>)</span></span>
-<span></span>
-<span><span class='va'>dat</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x"</span>, <span class='st'>"y"</span><span class='op'>)</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/check_sex.html'>check_sex</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>)</span><span class='op'>]</span></span>
-<span></span>
-<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>missing</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>colMeans</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>detP</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span><span class='op'>]</span></span>
-<span></span>
-<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>u</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/pkg/matrixStats/man/rowMedians.html'>colMedians</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>U</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>log2</span><span class='op'>]</span></span>
-<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>m</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/pkg/matrixStats/man/rowMedians.html'>colMedians</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>M</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>log2</span><span class='op'>]</span></span></code></pre>
-</div>
-</div>
-<h2 id="sex-check">Sex check</h2>
-<p>Check that reported biological sex is concordant with methylation chromosome
-intensity. Below plot shows that this is the case and that there are no issues
-between reported and observed</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>y</span>, color <span class='op'>=</span> <span class='va'>sex</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>1.5</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"X chromosome intensity"</span>, y<span class='op'>=</span> <span class='st'>"Y chromosome intensity"</span>, color <span class='op'>=</span> <span class='st'>"Reported sex"</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"bottom"</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
-</div>
-<p><img src="qc_files/figure-html5/check%20reported%20sex-1.png" width="624" /></p>
-</div>
-<h2 id="methylation-intensity">Methylation intensity</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>m</span>, y <span class='op'>=</span> <span class='va'>u</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Methylated intensity"</span>, y <span class='op'>=</span> <span class='st'>"Unmethylated intensity"</span>,</span>
-<span>       title <span class='op'>=</span> <span class='st'>"Median intensities on log2 scale"</span><span class='op'>)</span></span></code></pre>
-</div>
-<p><img src="qc_files/figure-html5/methylation%20intensity-1.png" width="624" /></p>
-</div>
-<h2 id="average-detection-p-failure">Average detection P failure</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>missing</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"black"</span>, fill <span class='op'>=</span> <span class='st'>"grey"</span>, bins <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Average probe failure for sample"</span><span class='op'>)</span></span></code></pre>
-</div>
-<p><img src="qc_files/figure-html5/detp%20fail-1.png" width="624" /></p>
-</div>
-<h2 id="check-genotyping-agreement">Check genotyping agreement</h2>
-<p>The following function uses the expression from SNP probes to infer genotypes
-and check for genetic relatedness. We see that 3 of our technical replicate
-pairs appear to be duplicates of the other 3 replicate pairs. They are in fact
-from <strong>monozygotic twins</strong> and not from the same individual which is why
-it looks like we erroneously have duplicate samples listed as from different
-people.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/check_snp_agreement.html'>check_snp_agreement</a></span><span class='op'>(</span><span class='va'>geno</span>, <span class='va'>dat</span><span class='op'>[</span>, <span class='va'>num</span><span class='op'>]</span>, <span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span><span class='op'>)</span></span></code></pre>
-</div>
-<pre><code>$`1`
-   donor1    sample1 donor2    sample2 agreement
-1:   2032 GSM1506284   2033 GSM1506278 0.9999912
-2:   2032 GSM1506284   2033 GSM1506581 0.9999738
-3:   2032 GSM1506587   2033 GSM1506278 0.9999278
-4:   2032 GSM1506587   2033 GSM1506581 0.9999975
-
-$`2`
-   donor1    sample1 donor2    sample2 agreement
-1:   2041 GSM1506342   2042 GSM1506336 0.9999925
-2:   2041 GSM1506342   2042 GSM1506580 0.9992212
-3:   2041 GSM1506586   2042 GSM1506336 0.9995901
-4:   2041 GSM1506586   2042 GSM1506580 0.9999960
-
-$`3`
-   donor1    sample1 donor2    sample2 agreement
-1:   2085 GSM1506333   2086 GSM1506327 0.9999908
-2:   2085 GSM1506333   2086 GSM1506432 0.9999783
-3:   2085 GSM1506438   2086 GSM1506327 0.9999454
-4:   2085 GSM1506438   2086 GSM1506432 0.9999915</code></pre>
-</div>
-<h1 id="qc-with-beta-methylation-matrix">QC with beta methylation matrix</h1>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>beta</span> <span class='op'>&lt;-</span> <span class='va'>meth</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/Preprocessing.html'>dont_normalize</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
-</div>
-</div>
-<h2 id="cell-proportions">Cell proportions</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>cells</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/cell_composition.html'>estimateLC</a></span><span class='op'>(</span><span class='va'>beta</span>, ref <span class='op'>=</span> <span class='st'>"Salas"</span><span class='op'>)</span></span>
-<span><span class='va'>cellpc1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/prcomp.html'>prcomp</a></span><span class='op'>(</span><span class='va'>cells</span><span class='op'>)</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span>, <span class='fl'>1</span><span class='op'>]</span></span>
-<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>cellpc</span> <span class='op'>:=</span> <span class='va'>cellpc1</span><span class='op'>]</span></span></code></pre>
-</div>
-</div>
-<h2 id="principal-components">Principal components</h2>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>whichna</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>beta</span><span class='op'>)</span>, arr.ind <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></span>
-<span><span class='va'>beta</span><span class='op'>[</span><span class='va'>whichna</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowMeans</a></span><span class='op'>(</span><span class='va'>beta</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span><span class='op'>[</span><span class='va'>whichna</span><span class='op'>[</span>, <span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
-<span><span class='va'>pcs</span> <span class='op'>&lt;-</span> <span class='va'>beta</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>t</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>prcomp</span></span>
-<span><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='va'>pcs</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span><span class='op'>)</span></span></code></pre>
-</div>
-</div>
-<p>Surprisingly no real relationship in the cell pell principal component and
-general expression principal component</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>PC1</span>, <span class='va'>PC2</span>, </span>
-<span>                color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>cellpc1</span>, <span class='fl'>3</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>as.factor</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>as.integer</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>as.factor</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"Tertile of cell PC"</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"bottom"</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
-</div>
-<p><img src="qc_files/figure-html5/plot%20pcs-1.png" width="624" /></p>
-</div>
-<h2 id="pcs-by-slide">PCS by slide</h2>
-<p>The technical replicate pairs are plated next to each other which means
-they aren’t subject to batch effects as much. This can be good or bad depending
-on how you look at it. It will make the concordance between these pairs
-to be artificially higher than concordance between different plated pairs.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>slide</span> <span class='op'>:=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/tstrsplit.html'>tstrsplit</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>beta</span><span class='op'>)</span>, <span class='st'>"_"</span>, keep <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>]</span></span>
-<span></span>
-<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>PC1</span>, y <span class='op'>=</span> <span class='va'>PC2</span>, color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>slide</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"Slide"</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
-</div>
-<p><img src="qc_files/figure-html5/pcs%20with%20slide-1.png" width="624" /></p>
-</div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
