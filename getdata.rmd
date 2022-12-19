@@ -12,7 +12,7 @@ output: distill::distill_article
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = T)
 
 library(tidyverse)
 library(data.table)
@@ -51,17 +51,19 @@ if(!dir.exists("idats")){
 #Where this series is located
 repourl <- "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1506nnn/"
 
-for(i in dat[, id]){
+if(length(list.files("idats")) < dat[, 2*length(id)]){ #A tiny bit hackish control flow
+  for(i in dat[, id]){
   #Need to grab more info on name of sample to download
-  ftplines <- paste0(repourl, i, "/suppl/") %>% readLines() 
+    ftplines <- paste0(repourl, i, "/suppl/") %>% readLines() 
   
   #Get red and green idat file locations
-  idatnames <- ftplines[str_detect(ftplines, "\\.idat\\.gz")] %>% tstrsplit('\\"', keep = 2) %>% unlist
-    paste0(repourl, i, "/suppl/", idatnames[[1]]) %>% 
-    download.file(destfile = paste0("idats/",idatnames[[1]]))
+    idatnames <- ftplines[str_detect(ftplines, "\\.idat\\.gz")] %>% tstrsplit('\\"', keep = 2) %>% unlist
+      paste0(repourl, i, "/suppl/", idatnames[[1]]) %>% 
+      download.file(destfile = paste0("idats/",idatnames[[1]]))
     
-    paste0(repourl, i, "/suppl/", idatnames[[2]]) %>% 
-    download.file(destfile = paste0("idats/",idatnames[[2]]))
+      paste0(repourl, i, "/suppl/", idatnames[[2]]) %>% 
+      download.file(destfile = paste0("idats/",idatnames[[2]]))
+  }
 }
 ```
 
@@ -70,7 +72,7 @@ for(i in dat[, id]){
 All samples for this study have have bio sex listed on the website after a uniform pattern
 of "sex, 1=m, 2=f: [number]" which we can use to match to web scraped results.  
 
-```{r}
+```{r, eval = F}
 s <- readLines("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1506327")
 biosex <- map(dat[, id], function(acc){
   readLines(paste0("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=", acc)) %>%

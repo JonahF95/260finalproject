@@ -34,20 +34,23 @@ if(!dir.exists("pp")){
 ```
 
 ```{r read in idats, warning = F}
-idats <- list.files("idats/", full.names = T, pattern = "\\.idat.gz$") %>%
-  str_remove("_(Grn|Red)\\.idat\\.gz") %>%
-  unique 
+if(!file.exists("pp/meth.rds")){
+  idats <- list.files("idats/", full.names = T, pattern = "\\.idat.gz$") %>%
+    str_remove("_(Grn|Red)\\.idat\\.gz") %>%
+    unique 
 
-indmatch <- match(dat[, id], idats %>% str_extract("GSM[\\d]*"))
-idats <- idats[indmatch]
+  indmatch <- match(dat[, id], idats %>% str_extract("GSM[\\d]*"))
+  idats <- idats[indmatch]
 
-meth <- read_idats(idats) %>% detectionP
-stopifnot(dat[, id] == str_extract(meth$meta$sample_id, "GSM[\\d]*"))
-saveRDS(meth, "pp/meth.rds")
+  meth <- read_idats(idats) %>% detectionP
+  stopifnot(dat[, id] == str_extract(meth$meta$sample_id, "GSM[\\d]*"))
+  saveRDS(meth, "pp/meth.rds")
+}
 ```
 
 ```{r preprocess}
 #Get SNP probes for genotyping
+meth <- readRDS("pp/meth.rds")
 mani <- ewastools:::manifest_450K
 snps <- mani[probe_type == "rs", probe_id]
 geno <- call_genotypes(meth %>% mask(0.01) %>% dont_normalize %>% .[snps,])

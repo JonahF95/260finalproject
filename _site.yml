@@ -10,7 +10,7 @@ navbar:
     - text: "About"
       href: about.html
     - text: "Data Acquisition"
-      href getdata.rmd
+      href: getdata.html
     - text: "Quality Control"
-      href qc.rmd
+      href: qc.html
 output: distill::distill_article
