@@ -8,18 +8,12 @@ author:
     affiliation: Harvard T.H. Chan Department of Biostatistics
     affiliation_url: https://www.hsph.harvard.edu/biostatistics/
 date: "`r Sys.Date()`"
-output: 
-  distill::distill_article:
-    toc: true
-    toc_depth: 6
-    toc_float: true
-    css: toc-styles.css
-    self_contained: false
+output: distill::distill_article
 ---
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = F)
+knitr::opts_chunk$set(echo = TRUE, cache = T)
 
 library(tidyverse)
 library(data.table)
@@ -75,7 +69,7 @@ Check that reported biological sex is concordant with methylation chromosome
 intensity. Below plot shows that this is the case and that there are no issues
 between reported and observed
 
-```{r check_reported_sex}
+```{r check reported sex}
 ggplot(dat, aes(x = x, y = y, color = sex)) +
   geom_point(size = 1.5) +
   labs(x = "X chromosome intensity", y= "Y chromosome intensity", color = "Reported sex") +
@@ -85,7 +79,7 @@ ggplot(dat, aes(x = x, y = y, color = sex)) +
 
 ## Methylation intensity
 
-```{r methylation_intensity}
+```{r methylation intensity}
 ggplot(dat, aes(x = m, y = u)) +
   geom_point() + 
   labs(x = "Methylated intensity", y = "Unmethylated intensity",
@@ -94,7 +88,7 @@ ggplot(dat, aes(x = m, y = u)) +
 
 ## Average detection P failure
 
-```{r detp_fail}
+```{r detp fail}
 ggplot(dat, aes(x = missing)) +
   geom_histogram(color = "black", fill = "grey", bins = 4) +
   labs(x = "Average probe failure for sample")
@@ -111,6 +105,7 @@ people.
 
 ```{r genotype agreement}
 check_snp_agreement(geno, dat[, num], dat[, id])
+
 ```
 
 # QC with beta methylation matrix
@@ -140,7 +135,7 @@ dat <- data.table(dat, pcs$x[, 1:5])
 Surprisingly no real relationship in the cell pell principal component and 
 general expression principal component
 
-```{r plot_pcs}
+```{r plot pcs}
 ggplot(dat, aes(PC1, PC2, 
                 color = cut(cellpc1, 3) %>% as.factor %>% as.integer %>% as.factor)) +
   geom_point() +
@@ -156,7 +151,7 @@ they aren't subject to batch effects as much. This can be good or bad depending
 on how you look at it. It will make the concordance between these pairs
 to be artificially higher than concordance between different plated pairs.
 
-```{r pcs_with_slide}
+```{r pcs with slide}
 dat[, slide := tstrsplit(colnames(beta), "_", keep = 2)]
 
 ggplot(dat, aes(x = PC1, y = PC2, color = as.factor(slide))) +

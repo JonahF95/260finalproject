@@ -13,4 +13,6 @@ navbar:
       href: getdata.html
     - text: "Quality Control"
       href: qc.html
+    - icon: fab fa-github
+      href: https://github.com/JonahF95
 output: distill::distill_article
