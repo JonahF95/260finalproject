@@ -1,22 +1,29 @@
 ---
 title: "Get Methylation Data"
 description: |
-  A new article created using the Distill format.
+  Acquiring DNA methylation data and corresponding phenotype information
 author:
   - name: Jonah Fisher
     url: https://github.com/JonahF95
     affiliation: Harvard T.H. Chan Department of Biostatistics
     affiliation_url: https://www.hsph.harvard.edu/biostatistics/
 date: "`r Sys.Date()`"
-output: distill::distill_article
+output: 
+  distill::distill_article:
+    toc: true
+    toc_depth: 6
+    toc_float: true
+    css: toc-styles.css
+    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = T)
+knitr::opts_chunk$set(echo = TRUE, cache = T, eval = F)
 
 library(tidyverse)
 library(data.table)
 library(rvest)
+library(gt)
 ```
 
 # Get data
@@ -27,7 +34,7 @@ library(rvest)
 url <- "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE61496"
 l <- read_html(url)
 l <- l %>% html_text %>% str_split("\n") %>% unlist
-idx <- str_detect(l, "_[A|B]") %>% which
+idx <- str_detect(l, "_[A|B|C|D|E]") %>% which
 
 dat <- data.table(
   id = l[idx - 1],
@@ -36,6 +43,9 @@ dat <- data.table(
 
 dat[, c("num", "orig") := tstrsplit(num, "_")]
 setkey(dat, num)
+fwrite(dat, "origdat.csv")
+
+gt(dat) %>% gtsave("origdat.png")
 ```
 
 ## Get urls for raw files

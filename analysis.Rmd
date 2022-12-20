@@ -1,0 +1,151 @@
+---
+title: "Analysis"
+description: |
+  A new article created using the Distill format.
+author:
+  - name: Jonah Fisher
+    url: https://github.com/JonahF95
+    affiliation: Harvard T.H. Chan Department of Biostatistics
+    affiliation_url: https://www.hsph.harvard.edu/biostatistics/
+date: "`r Sys.Date()`"
+output: 
+  distill::distill_article:
+    toc: true
+    toc_depth: 6
+    toc_float: true
+    css: toc-styles.css
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(data.table)
+library(ggsci)
+library(ewastools)
+library(caret)
+library(bnstruct)
+
+theme_set(theme_bw())
+```
+
+# Load in qc data
+
+```{r load data}
+dat <- fread("pdqc.csv")
+meth <- readRDS("pp/meth.rds")
+```
+
+# Create matrix of predictors and get beta matrix
+
+M values are a log transformation of the beta methylation values. Log transformed
+gives them a better distribution. Instead of ranging from 0-1 as in beta values
+the 0.5 value becomes a 0 for m values and higher/lower levels of methylation become
+positive/negative respectively.
+
+```{r matrix of predictors}
+# Predictor matrix to perform PCA on
+xmat <- do.call("rbind", list(meth$ctrlG, meth$ctrlN, meth$ctrlR)) %>% t
+colnames(xmat) <- c(paste0("ctrlg", 1:850), paste0("ctrln", 1:850), paste0("ctrlr", 1:850))
+missmat <- which(is.na(xmat), arr.ind = T)
+xmat[missmat] <- rowMeans(xmat, na.rm = T)[missmat[, 1]]
+xpc <- prcomp(xmat)
+
+#M values for outcome
+m <- meth %>% dont_normalize() %>% wateRmelon::Beta2M()
+centm <- m %>% t %>% scale(scale = F) %>% t
+```
+
+# Linear modeling
+
+The simplest form to start is with linear modeling. Principal components 1-10 of
+the predictor matrix is used to predict the mean centered DNA methylation
+expression
+
+```{r predict values}
+set.seed(260)
+irow <- sample(65:nrow(centm), size = 1000)
+lmout <- list()
+for(i in irow){
+  lmout[[paste0("row", i)]] <- lm(y ~ ., data = data.table(y = centm[i,], x = xpc$x[, 1:10]))
+}
+```
+
+## Pull out different coefficients and significance
+
+We look to see if there's any consistency between the coefficients and the statistical
+significance of each of the 10 PCA predictors
+
+### Coefficients
+
+```{r get coefficients}
+coefdt <- map(lmout, ~coef(.x)[2:11]) %>% do.call("rbind", .) %>% data.table
+colnames(coefdt) <- str_extract(colnames(coefdt), "PC\\d*")
+coefdt <- melt(coefdt)
+
+ggplot(coefdt, aes(x = variable, y = value)) +
+  geom_boxplot() +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+  labs(x = "Predictor", y = "Coefficient distribution")
+ggsave("coefficient_predictors.png")
+
+#Only PC1/PC2 seems to have coefficients significantly different from 0 consistently
+t.test(coefdt[variable == "PC1", value])
+t.test(coefdt[variable == "PC2", value])
+
+coefdt[, t.test(value), by = variable]
+```
+
+### Significance
+
+```{r get significance}
+sigdt <- map(lmout, ~summary(.x)$coefficients[-1, 3]) %>% do.call("rbind", .) %>% data.table
+colnames(sigdt) <- str_extract(colnames(sigdt), "PC\\d*")
+sigdt <- melt(sigdt)
+
+ggplot(sigdt, aes(x = variable, y = value)) +
+  geom_boxplot() +
+  geom_hline(lty = "dashed", yintercept = 0) +
+  labs(x = "Predictor", y = "Test statistic distribution")
+ggsave("tstat.png")
+
+# t.test(sigdt[variable == "PC1", value])
+# t.test(sigdt[variable == "PC2", value])
+sigdt[, t.test(value), by = variable]
+```
+
+### R squared
+
+There are fairly high r2 values from these models
+
+```{r get r2}
+r2 <- map(lmout, ~summary(.x)$r.squared) %>% data.table
+
+ggplot(r2, aes(x = unlist(.))) +
+  geom_histogram(bins = 20, color = "black", fill = "grey") +
+  labs(x = "Multiple R2 values")
+ggsave("rsq.png")
+
+```
+
+
+## RMSE
+
+```{r get rmse for the models}
+map(lmout, ~sd(fitted(.x))) %>% unlist -> sds
+map(lmout, ~sqrt(mean(.$residuals^2))) %>% unlist -> rmses
+
+formse <- data.table(sds = sds, rmses = rmses)
+formse[, mean(sds)]
+formse[, mean(rmses)]
+
+ggplot(formse, aes(x = sds, y = rmses)) +
+  geom_point() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(0, 4)) +
+  geom_smooth(method = "lm") +
+  labs(x = "SDs of fitted values", y = "RMSE of model")
+ggsave("sdvsrmse.png")
+```
+
+

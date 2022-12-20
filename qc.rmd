@@ -1,19 +1,25 @@
 ---
 title: "Quality Control"
 description: |
-  A new article created using the Distill format.
+  Quality control on the DNA methylation dataset
 author:
   - name: Jonah Fisher
     url: https://github.com/JonahF95
     affiliation: Harvard T.H. Chan Department of Biostatistics
     affiliation_url: https://www.hsph.harvard.edu/biostatistics/
 date: "`r Sys.Date()`"
-output: distill::distill_article
+output: 
+  distill::distill_article:
+    toc: true
+    toc_depth: 6
+    toc_float: true
+    css: toc-styles.css
+    self_contained: false
 ---
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = T)
+knitr::opts_chunk$set(echo = TRUE, cache = F)
 
 library(tidyverse)
 library(data.table)
@@ -75,6 +81,8 @@ ggplot(dat, aes(x = x, y = y, color = sex)) +
   labs(x = "X chromosome intensity", y= "Y chromosome intensity", color = "Reported sex") +
   theme(legend.position = "bottom") +
   scale_color_aaas()
+
+ggsave("sexcheck.png")
 ```
 
 ## Methylation intensity
@@ -97,15 +105,14 @@ ggplot(dat, aes(x = missing)) +
 ## Check genotyping agreement
 
 The following function uses the expression from SNP probes to infer genotypes
-and check for genetic relatedness. We see that 3 of our technical replicate
-pairs appear to be duplicates of the other 3 replicate pairs. They are in fact 
+and check for genetic relatedness. We see that many of our technical replicate
+pairs appear to be duplicates of other technical replicate pairs. They are in fact 
 from **monozygotic twins** and not from the same individual which is why
 it looks like we erroneously have duplicate samples listed as from different 
 people.
 
 ```{r genotype agreement}
 check_snp_agreement(geno, dat[, num], dat[, id])
-
 ```
 
 # QC with beta methylation matrix
@@ -158,5 +165,13 @@ ggplot(dat, aes(x = PC1, y = PC2, color = as.factor(slide))) +
   geom_point() +
   labs(color = "Slide") +
   scale_color_aaas()
+
+ggsave("pcs_by_slide.png")
 ```
+
+```{r save dat}
+fwrite(dat, "pdqc.csv")
+```
+
+
 

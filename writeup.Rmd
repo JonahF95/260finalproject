@@ -1,0 +1,196 @@
+---
+title: "Final Report: BST 260 Capstone"
+description: |
+  Report on the use of linear models in predicting DNA methylation expression from
+  quality control metrics
+author:
+  - name: Jonah Fisher
+    url: https://github.com/JonahF95
+    affiliation: Harvard T.H. Chan Department of Biostatistics
+    affiliation_url: https://www.hsph.harvard.edu/biostatistics/
+date: "`r Sys.Date()`"
+output: 
+  distill::distill_article:
+    toc: true
+    toc_depth: 6
+    toc_float: true
+    css: toc-styles.css
+    self_contained: false
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = TRUE, cache = F)
+
+library(tidyverse)
+library(data.table)
+library(ewastools)
+library(ggsci)
+library(gt)
+library(matrixStats)
+
+theme_set(theme_bw())
+```
+
+# Introduction
+
+From prior work experience I had learned of DNA methylation expression data. I do 
+not have much of any experience with publically available data and thought that investigating 
+the relationship between quality control measures and expression data could provide 
+useful experience in web scraping, data wrangling, and data analysis. There
+are numerous quality control measurements as part of expression data and I thought
+that an interesting question could be to explore machine learning approaches to
+predicting methylation expression levels from the QC data. Several normalization 
+and adjustment methods (including at least one popular one that included Professor Irizarry
+as a coauthor)
+to correct for technical artifacts in DNAm have been published already that use
+these 'control probes' (Triche et al. 2013). A set of technical replicate sample pairs were 
+downloaded from the publically available Gene Expression Omnibus data (GEO) 
+data repository (Tan et al. 2014). There is the potential that this machine
+learning approach can be used for normalization in a manner similar to the aforementioned
+packages or for imputation in a manner such as knn imputation. Taking the project
+to that conclusion is beyond the scope of what I will be able to do for this 
+class but I am planning to continue on in the future to make an attempt at this normalization and imputation.
+At this point in the project I will look at linear regression to use principal
+components from control probe expression to predict mean centered expression
+values for various probes. This was chosen as it forms a good stepping stone before
+delving into more complicated methodologies. The future aims will include a variety of more 
+advance machine learning approaches.
+As part of data wrangling and exploratory data analysis QC information from 
+this expression data was compiled into a data table (Table 2) and quality control
+checks such as principal component analysis against technical artifacts like plating
+(Figure 2) were investigated.
+In summary, the general motivating question behind this project is whether
+machine learning applied to DNAm quality control metrics can be useful in predicting,
+imputing, and normalizing expression data. 
+
+
+# Results 
+
+Data were aggregated from 'scratch' from a public repository GEO ![Gene Expression
+Omnibus](https://www.ncbi.nlm.nih.gov/geo/). A set of data on Danish twins was chosen
+and 15 samples were downloaded from the website (Tan et al. 2014). This dataset
+was chosen because it has readily available 'raw' files (idats) which include 
+non preprocessed expression data which was necessary for this report. The 15 samples
+reflected samples for which there were technical replicates which can facilitate 
+assessment of normalization efficacy in how similar the expression data of the 
+pairs becomes. Extensive data wrangling was necessary to identify the technical replicates,
+download their data, acquire phenotype information (just on self reported sex for QC),
+and to preprocess the methylation data. Web scraping from the series website (Image 1)
+involved reading lines from the html page with __htmltools__ and searching for regex
+matches to underline followed by letters A-E which were used to mark technical replicate 
+pairs. The GSM ID for these samples was extracted, saved to an initial data table (Table 1), and looped
+through downloading via ftp the appropriate .idat files. For a QC step involving
+checking reported and DNA methylation sex the __readLines__ function was used
+for each of the samples html page and regex was used to extract the reported sex. 
+
+Quality control for the expression data primarily followed the pipeline set up
+by the authors of the __ewasools__ package (Heiss & Just 2018). Raw idats were 
+read in with the __read_idats__ function. Reported sex was compared to DNA
+methylation expression levels from the sex chromosome probes with intent
+to identify possible misplates of which there were none (Figure 1). Technical noise in 
+background signal was assessed with a metric known as *Detection P* which showed
+reasonable quality of assay for all samples. Sample cell proportion estimates and principal
+components of expression data were created to explore primary sources of variation 
+in the expression data (Figure 2) and quality control information was summarized
+for each sample and finally, expression data was converted to a log-transformed 
+state for use in the coming analyses.
+
+The analysis performed looked at using a linear regression model to predict
+DNA methylation expression. Expression data was mean centered across samples
+and therefore the outcome was degree of increase or decrease in methylation as
+compared to the average across samples. For reasons memory primarily as well 
+as limited availability of technical replicate samples, there were 
+only 15 samples included in the analysis and therefore the dimensions of predictors
+were cut down. A total of 2550 methylation probes were put into principal component
+analysis with the first 10 components being used as predictors. Since there are
+over 400,000 different sites to look at a random sample of 1000 methylation sites
+was selected for purposes of computation time and memory space, 
+and the outputs of the linear model on each site was compared. PCs
+1, 2, and 5 all had consistently negative effects on mean centered methylation, 
+with PCs 3, 6, 7 having consistently positive effects as assessed with t-tests (Figure 3). 
+R squared values were far higher than expected with the 10 PCs of the control
+probes with 950 (95%) of the sites showing an r-squared value of >= 0.59 (Figure 4). 
+The RMSE also fared up favorably and was quite small with the average standard
+deviation of the fitted values being 0.39 and the average of the room mean
+squared errors being 0.14 (Figure 5)
+
+# Conclusion
+
+In short, the low RMSEs and high R squareds provide promising initial feedback
+on the merit of this project. The aim was to investigate the relationship
+between quality control metrics from DNA methylation microarrays, and the expression
+levels of the samples. The public dataset GEO was accessed for a set of technical
+replicate pairs. Exploratory data analysis and quality control revealed no major 
+issues in the underlying data. A log transformed and sample mean centered expression
+matrix was created and expression levels were predicted from principal components
+of quality control metrics. Given the success of the linear modeling there is
+good merit in continuing the project while addressing some limitations of the current
+methods and data. First, a higher sample count will be helpful for statistical power. 
+Second, with greater analysis time it will be possible to look at all 485,000 
+methylation sites rather than a random sample of 1000 of them. Third, more advanced
+machine learning methods such as knn, random forest, and neural networks may 
+provide even better predictive power. Fourth, the utility of this approach in
+normalization and imputation can be assessed through both minimizing technical replicate
+error rates and perhaps improving the predictive power of poly-epigenetic scores. 
+
+# Appendix
+
+## Figures
+
+![Image 1](./geosite.png)
+
+
+**Table 1: Initial sample information data table**
+
+```{r, echo = F, fig.height=2, fig.width=4}
+fread("origdat.csv") %>% gt
+```
+
+**Figure 1: Reported sex with sex chromosome expression levels**
+
+![Figure 1](./sexcheck.png)  
+
+**Figure 2: Principal components of expression data with sample slide**
+
+![Figure 2](./pcs_by_slide.png) 
+
+**Table 2: Quality control augmented sample data table**
+
+```{r, echo = F, fig.height=2, fig.width=4}
+fread("pdqc.csv") %>% gt
+```
+
+**Figure 3: Coefficient boxplots from linear modeling**
+
+![](./coefficient_predictors.png)
+
+**Figure 4: R squared values from linear modeling**
+
+![](./rsq.png)
+
+**Figure 5: Fitted values SDs vs. RMSEs from linear modeling**
+
+![](./sdvsrmse.png)
+
+## Code 
+
+All of the code for this project can be seen in cleaner formatting in the other pages linked at the 
+top of the website. Here is a __cat__ printout of the 3 rmarkdown code files.
+
+```{bash, echo = F}
+cat getdata.md
+cat qc.rmd
+cat analysis.Rmd
+```
+
+
+## References
+
+Tan Q, Frost M, Heijmans BT, von Bornemann Hjelmborg J, Tobi EW, Christensen K, Christiansen L. Epigenetic signature of birth weight discordance in adult twins. BMC Genomics. 2014 Dec 4;15(1):1062. doi: 10.1186/1471-2164-15-1062. PMID: 25476734; PMCID: PMC4302120.
+
+Timothy J. Triche, Jr, Daniel J. Weisenberger, David Van Den Berg, Peter W. Laird, Kimberly D. Siegmund, Low-level processing of Illumina Infinium DNA Methylation BeadArrays, Nucleic Acids Research, Volume 41, Issue 7, 1 April 2013, Page e90, https://doi.org/10.1093/nar/gkt090
+
+Heiss, J., Just, A. Identifying mislabeled and contaminated DNA methylation microarray data: an extended quality control toolset with examples from GEO. Clin Epigenet 10, 73 (2018). https://doi.org/10.1186/s13148-018-0504-1
+
+https://jhelvy.github.io/distillery/ -- For various helpful tips in the development of this website format.
+

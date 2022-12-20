@@ -90,31 +90,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_meta_tags-->
   <title>Capstone Project: BST 260: Quality Control</title>
 
-  <meta property="description" itemprop="description" content="A new article created using the Distill format."/>
+  <meta property="description" itemprop="description" content="Quality control on the DNA methylation dataset"/>
 
 
   <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2022-12-19"/>
-  <meta property="article:created" itemprop="dateCreated" content="2022-12-19"/>
+  <meta property="article:published" itemprop="datePublished" content="2022-12-20"/>
+  <meta property="article:created" itemprop="dateCreated" content="2022-12-20"/>
   <meta name="article:author" content="Jonah Fisher"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
   <meta property="og:title" content="Capstone Project: BST 260: Quality Control"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="A new article created using the Distill format."/>
+  <meta property="og:description" content="Quality control on the DNA methylation dataset"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Capstone Project: BST 260"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
   <meta property="twitter:title" content="Capstone Project: BST 260: Quality Control"/>
-  <meta property="twitter:description" content="A new article created using the Distill format."/>
+  <meta property="twitter:description" content="Quality control on the DNA methylation dataset"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Quality Control"]},{"type":"character","attributes":{},"value":["A new article created using the Distill format.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Jonah Fisher"]},{"type":"character","attributes":{},"value":["https://github.com/JonahF95"]},{"type":"character","attributes":{},"value":["Harvard T.H. Chan Department of Biostatistics"]},{"type":"character","attributes":{},"value":["https://www.hsph.harvard.edu/biostatistics/"]}]}]},{"type":"character","attributes":{},"value":["2022-12-19"]},{"type":"character","attributes":{},"value":["distill::distill_article"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Quality Control"]},{"type":"character","attributes":{},"value":["Quality control on the DNA methylation dataset\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Jonah Fisher"]},{"type":"character","attributes":{},"value":["https://github.com/JonahF95"]},{"type":"character","attributes":{},"value":["Harvard T.H. Chan Department of Biostatistics"]},{"type":"character","attributes":{},"value":["https://www.hsph.harvard.edu/biostatistics/"]}]}]},{"type":"character","attributes":{},"value":["2022-12-20"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float","css","self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[6]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["toc-styles.css"]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2090,6 +2090,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
+  <link rel="stylesheet" href="toc-styles.css" type="text/css"/>
 
 </head>
 
@@ -2098,7 +2099,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Quality Control","description":"A new article created using the Distill format.","authors":[{"author":"Jonah Fisher","authorURL":"https://github.com/JonahF95","affiliation":"Harvard T.H. Chan Department of Biostatistics","affiliationURL":"https://www.hsph.harvard.edu/biostatistics/","orcidID":""}],"publishedDate":"2022-12-19T00:00:00.000-05:00","citationText":"Fisher, 2022"}
+{"title":"Quality Control","description":"Quality control on the DNA methylation dataset","authors":[{"author":"Jonah Fisher","authorURL":"https://github.com/JonahF95","affiliation":"Harvard T.H. Chan Department of Biostatistics","affiliationURL":"https://www.hsph.harvard.edu/biostatistics/","orcidID":""}],"publishedDate":"2022-12-20T00:00:00.000-05:00","citationText":"Fisher, 2022"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2109,10 +2110,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <a href="index.html" class="title">Capstone Project: BST 260</a>
 </div>
 <div class="nav-right">
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
+<a href="writeup.html">Final Report</a>
 <a href="getdata.html">Data Acquisition</a>
 <a href="qc.html">Quality Control</a>
+<a href="analysis.html">Primary Analysis</a>
 <a href="https://github.com/JonahF95">
 <i class="fab fa-github" aria-hidden="true"></i>
 </a>
@@ -2128,16 +2129,33 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h1>Quality Control</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>A new article created using the Distill format.</p></p>
+<p><p>Quality control on the DNA methylation dataset</p></p>
 </div>
 
 <div class="d-byline">
   Jonah Fisher <a href="https://github.com/JonahF95" class="uri">https://github.com/JonahF95</a> (Harvard T.H. Chan Department of Biostatistics)<a href="https://www.hsph.harvard.edu/biostatistics/" class="uri">https://www.hsph.harvard.edu/biostatistics/</a>
   
-<br/>2022-12-19
+<br/>2022-12-20
 </div>
 
 <div class="d-article">
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#sex-check" id="toc-sex-check">Sex check</a></li>
+<li><a href="#methylation-intensity" id="toc-methylation-intensity">Methylation intensity</a></li>
+<li><a href="#average-detection-p-failure" id="toc-average-detection-p-failure">Average detection P failure</a></li>
+<li><a href="#check-genotyping-agreement" id="toc-check-genotyping-agreement">Check genotyping agreement</a></li>
+<li><a href="#qc-with-beta-methylation-matrix" id="toc-qc-with-beta-methylation-matrix">QC with beta methylation matrix</a>
+<ul>
+<li><a href="#cell-proportions" id="toc-cell-proportions">Cell proportions</a></li>
+<li><a href="#principal-components" id="toc-principal-components">Principal components</a></li>
+<li><a href="#pcs-by-slide" id="toc-pcs-by-slide">PCS by slide</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fread.html'>fread</a></span><span class='op'>(</span><span class='st'>"samplesheet.csv"</span><span class='op'>)</span></span>
@@ -2189,9 +2207,10 @@ between reported and observed</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>1.5</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"X chromosome intensity"</span>, y<span class='op'>=</span> <span class='st'>"Y chromosome intensity"</span>, color <span class='op'>=</span> <span class='st'>"Reported sex"</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"bottom"</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
+<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggsave</a></span><span class='op'>(</span><span class='st'>"sexcheck.png"</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/check%20reported%20sex-1.png" width="624" /></p>
 </div>
 <h2 id="methylation-intensity">Methylation intensity</h2>
 <div class="layout-chunk" data-layout="l-body">
@@ -2201,7 +2220,6 @@ between reported and observed</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Methylated intensity"</span>, y <span class='op'>=</span> <span class='st'>"Unmethylated intensity"</span>,</span>
 <span>       title <span class='op'>=</span> <span class='st'>"Median intensities on log2 scale"</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/methylation%20intensity-1.png" width="624" /></p>
 </div>
 <h2 id="average-detection-p-failure">Average detection P failure</h2>
 <div class="layout-chunk" data-layout="l-body">
@@ -2210,12 +2228,11 @@ between reported and observed</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"black"</span>, fill <span class='op'>=</span> <span class='st'>"grey"</span>, bins <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Average probe failure for sample"</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/detp%20fail-1.png" width="624" /></p>
 </div>
 <h2 id="check-genotyping-agreement">Check genotyping agreement</h2>
 <p>The following function uses the expression from SNP probes to infer genotypes
-and check for genetic relatedness. We see that 3 of our technical replicate
-pairs appear to be duplicates of the other 3 replicate pairs. They are in fact
+and check for genetic relatedness. We see that many of our technical replicate
+pairs appear to be duplicates of other technical replicate pairs. They are in fact
 from <strong>monozygotic twins</strong> and not from the same individual which is why
 it looks like we erroneously have duplicate samples listed as from different
 people.</p>
@@ -2223,26 +2240,6 @@ people.</p>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/check_snp_agreement.html'>check_snp_agreement</a></span><span class='op'>(</span><span class='va'>geno</span>, <span class='va'>dat</span><span class='op'>[</span>, <span class='va'>num</span><span class='op'>]</span>, <span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span><span class='op'>)</span></span></code></pre>
 </div>
-<pre><code>$`1`
-   donor1    sample1 donor2    sample2 agreement
-1:   2032 GSM1506284   2033 GSM1506278 0.9999912
-2:   2032 GSM1506284   2033 GSM1506581 0.9999738
-3:   2032 GSM1506587   2033 GSM1506278 0.9999278
-4:   2032 GSM1506587   2033 GSM1506581 0.9999975
-
-$`2`
-   donor1    sample1 donor2    sample2 agreement
-1:   2041 GSM1506342   2042 GSM1506336 0.9999925
-2:   2041 GSM1506342   2042 GSM1506580 0.9992212
-3:   2041 GSM1506586   2042 GSM1506336 0.9995901
-4:   2041 GSM1506586   2042 GSM1506580 0.9999960
-
-$`3`
-   donor1    sample1 donor2    sample2 agreement
-1:   2085 GSM1506333   2086 GSM1506327 0.9999908
-2:   2085 GSM1506333   2086 GSM1506432 0.9999783
-3:   2085 GSM1506438   2086 GSM1506327 0.9999454
-4:   2085 GSM1506438   2086 GSM1506432 0.9999915</code></pre>
 </div>
 <h1 id="qc-with-beta-methylation-matrix">QC with beta methylation matrix</h1>
 <div class="layout-chunk" data-layout="l-body">
@@ -2278,7 +2275,6 @@ general expression principal component</p>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"bottom"</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/plot%20pcs-1.png" width="624" /></p>
 </div>
 <h2 id="pcs-by-slide">PCS by slide</h2>
 <p>The technical replicate pairs are plated next to each other which means
@@ -2292,11 +2288,17 @@ to be artificially higher than concordance between different plated pairs.</p>
 <span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>PC1</span>, y <span class='op'>=</span> <span class='va'>PC2</span>, color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>slide</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"Slide"</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
+<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggsave</a></span><span class='op'>(</span><span class='st'>"pcs_by_slide.png"</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="qc_files/figure-html5/pcs%20with%20slide-1.png" width="624" /></p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fwrite.html'>fwrite</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='st'>"pdqc.csv"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
