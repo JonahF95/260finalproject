@@ -5,11 +5,11 @@ date: "`r Sys.Date()`"
 output: 
   pdf_document:
     toc: true
-    toc_depth: 6
+    toc_depth: 3
 ---
 
 ```{r setup, include=F}
-knitr::opts_chunk$set(echo = TRUE, cache = F)
+knitr::opts_chunk$set(echo = F, cache = F)
 
 library(tidyverse)
 library(data.table)
@@ -53,10 +53,11 @@ In summary, the general motivating question behind this project is whether
 machine learning applied to DNAm quality control metrics can be useful in predicting,
 imputing, and normalizing expression data. 
 
+\newpage 
 
 # Results 
 
-Data were aggregated from 'scratch' from a public repository GEO ![Gene Expression
+Data were aggregated from 'scratch' from a public repository GEO [Gene Expression
 Omnibus](https://www.ncbi.nlm.nih.gov/geo/). A set of data on Danish twins was chosen
 and 15 samples were downloaded from the website (Tan et al. 2014). This dataset
 was chosen because it has readily available 'raw' files (idats) which include 
@@ -127,40 +128,59 @@ error rates and perhaps improving the predictive power of poly-epigenetic scores
 
 ## Figures
 
-![Image 1](./geosite.png)
+### **Image 1: GEO sample data sites**
+
+```{r, echo = F}
+knitr::include_graphics("./geosite.png")
+```
 
 
 **Table 1: Initial sample information data table**
 
-```{r, echo = F, fig.height=2, fig.width=4}
+```{r, echo = F}
 fread("origdat.csv") %>% gt
 ```
 
-**Figure 1: Reported sex with sex chromosome expression levels**
 
-![Figure 1](./sexcheck.png)  
+### **Figure 1: Reported sex with sex chromosome expression levels**
 
-**Figure 2: Principal components of expression data with sample slide**
+```{r, echo = F}
+knitr::include_graphics("./sexcheck.png")
+```
 
-![Figure 2](./pcs_by_slide.png) 
 
-**Table 2: Quality control augmented sample data table**
+### **Figure 2: Principal components of expression data with sample slide**
+
+```{r, echo = F}
+knitr::include_graphics("./pcs_by_slide.png")
+```
+
+
+### **Table 2: Quality control augmented sample data table**
 
 ```{r, echo = F, fig.height=2, fig.width=4}
 fread("pdqc.csv") %>% gt
 ```
 
-**Figure 3: Coefficient boxplots from linear modeling**
 
-![](./coefficient_predictors.png)
+### **Figure 3: Coefficient boxplots from linear modeling**
 
-**Figure 4: R squared values from linear modeling**
+```{r, echo = F}
+knitr::include_graphics("./coefficient_predictors.png")
+```
 
-![](./rsq.png)
+### **Figure 4: R squared values from linear modeling**
 
-**Figure 5: Fitted values SDs vs. RMSEs from linear modeling**
+```{r, echo = F}
+knitr::include_graphics("./rsq.png")
+```
 
-![](./sdvsrmse.png)
+
+### **Figure 5: Fitted values SDs vs. RMSEs from linear modeling**
+
+```{r, echo = F}
+knitr::include_graphics("./sdvsrmse.png")
+```
 
 ## Code 
 
@@ -168,11 +188,10 @@ All of the code for this project can be seen in cleaner formatting in the other 
 top of the website. Here is a __cat__ printout of the 3 rmarkdown code files.
 
 ```{bash, echo = F}
-cat getdata.md
+cat getdata.rmd
 cat qc.rmd
 cat analysis.Rmd
 ```
-
 
 ## References
 

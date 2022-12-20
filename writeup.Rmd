@@ -178,7 +178,7 @@ All of the code for this project can be seen in cleaner formatting in the other 
 top of the website. Here is a __cat__ printout of the 3 rmarkdown code files.
 
 ```{bash, echo = F}
-cat getdata.md
+cat getdata.rmd
 cat qc.rmd
 cat analysis.Rmd
 ```
