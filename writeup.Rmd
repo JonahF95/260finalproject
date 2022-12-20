@@ -66,7 +66,7 @@ imputing, and normalizing expression data.
 
 # Results 
 
-Data were aggregated from 'scratch' from a public repository GEO ![Gene Expression
+Data were aggregated from 'scratch' from a public repository GEO [Gene Expression
 Omnibus](https://www.ncbi.nlm.nih.gov/geo/). A set of data on Danish twins was chosen
 and 15 samples were downloaded from the website (Tan et al. 2014). This dataset
 was chosen because it has readily available 'raw' files (idats) which include 
@@ -142,7 +142,7 @@ error rates and perhaps improving the predictive power of poly-epigenetic scores
 
 **Table 1: Initial sample information data table**
 
-```{r, echo = F, fig.height=2, fig.width=4}
+```{r, echo = F}
 fread("origdat.csv") %>% gt
 ```
 
@@ -154,9 +154,14 @@ fread("origdat.csv") %>% gt
 
 ![Figure 2](./pcs_by_slide.png) 
 
+```{r}
+knitr::include_graphics("./pcs_by_slide.png")
+```
+
+
 **Table 2: Quality control augmented sample data table**
 
-```{r, echo = F, fig.height=2, fig.width=4}
+```{r, echo = F}
 fread("pdqc.csv") %>% gt
 ```
 
