@@ -27,6 +27,7 @@ library(ewastools)
 library(ggsci)
 library(gt)
 library(matrixStats)
+library(DT)
 
 theme_set(theme_bw())
 ```
@@ -144,7 +145,7 @@ error rates and perhaps improving the predictive power of poly-epigenetic scores
 
 ```{r, echo = F}
 d <- fread("origdat.csv") 
-gt(d) 
+datatable(d) 
 ```
 
 ![Figure 1](./sexcheck.png)  
@@ -155,7 +156,7 @@ gt(d)
 
 ```{r, echo = F}
 pd <- fread("pdqc.csv") 
-gt(pd)
+datatable(pd %>% round(4))
 ```
 
 ![](./coefficient_predictors.png)
