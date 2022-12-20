@@ -143,37 +143,25 @@ error rates and perhaps improving the predictive power of poly-epigenetic scores
 **Table 1: Initial sample information data table**
 
 ```{r, echo = F}
-fread("origdat.csv") %>% gt
+d <- fread("origdat.csv") 
+gt(d) 
 ```
-
-**Figure 1: Reported sex with sex chromosome expression levels**
 
 ![Figure 1](./sexcheck.png)  
 
-**Figure 2: Principal components of expression data with sample slide**
-
 ![Figure 2](./pcs_by_slide.png) 
-
-```{r}
-knitr::include_graphics("./pcs_by_slide.png")
-```
-
 
 **Table 2: Quality control augmented sample data table**
 
 ```{r, echo = F}
-fread("pdqc.csv") %>% gt
+pd <- fread("pdqc.csv") 
+gt(pd)
 ```
-
-**Figure 3: Coefficient boxplots from linear modeling**
 
 ![](./coefficient_predictors.png)
 
-**Figure 4: R squared values from linear modeling**
 
 ![](./rsq.png)
-
-**Figure 5: Fitted values SDs vs. RMSEs from linear modeling**
 
 ![](./sdvsrmse.png)
 

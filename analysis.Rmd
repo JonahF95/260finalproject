@@ -107,7 +107,7 @@ sigdt <- melt(sigdt)
 ggplot(sigdt, aes(x = variable, y = value)) +
   geom_boxplot() +
   geom_hline(lty = "dashed", yintercept = 0) +
-  labs(x = "Predictor", y = "Test statistic distribution")
+  labs(x = "Predictor", y = "Test statistic distribution", title = "Figure 3: Coefficient boxplots from linear modeling")
 ggsave("tstat.png")
 
 # t.test(sigdt[variable == "PC1", value])
@@ -124,7 +124,7 @@ r2 <- map(lmout, ~summary(.x)$r.squared) %>% data.table
 
 ggplot(r2, aes(x = unlist(.))) +
   geom_histogram(bins = 20, color = "black", fill = "grey") +
-  labs(x = "Multiple R2 values")
+  labs(x = "Multiple R2 values", title = "Figure 4: R squared values from linear modeling")
 ggsave("rsq.png")
 
 ```
@@ -144,7 +144,7 @@ ggplot(formse, aes(x = sds, y = rmses)) +
   geom_point() +
   coord_cartesian(xlim = c(0, 4), ylim = c(0, 4)) +
   geom_smooth(method = "lm") +
-  labs(x = "SDs of fitted values", y = "RMSE of model")
+  labs(x = "SDs of fitted values", y = "RMSE of model", title = "Figure 5: Fitted values SDs vs. RMSEs from linear modeling")
 ggsave("sdvsrmse.png")
 ```
 

@@ -78,7 +78,8 @@ between reported and observed
 ```{r check reported sex}
 ggplot(dat, aes(x = x, y = y, color = sex)) +
   geom_point(size = 1.5) +
-  labs(x = "X chromosome intensity", y= "Y chromosome intensity", color = "Reported sex") +
+  labs(x = "X chromosome intensity", y= "Y chromosome intensity", color = "Reported sex",
+       title = "Figure 1: Reported sex with sex chromosome expression levels") +
   theme(legend.position = "bottom") +
   scale_color_aaas()
 
@@ -163,7 +164,7 @@ dat[, slide := tstrsplit(colnames(beta), "_", keep = 2)]
 
 ggplot(dat, aes(x = PC1, y = PC2, color = as.factor(slide))) +
   geom_point() +
-  labs(color = "Slide") +
+  labs(color = "Slide", title = "Figure 2: Principal components of expression data with sample slide") +
   scale_color_aaas()
 
 ggsave("pcs_by_slide.png")
