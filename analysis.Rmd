@@ -87,7 +87,7 @@ coefdt <- melt(coefdt)
 ggplot(coefdt, aes(x = variable, y = value)) +
   geom_boxplot() +
   geom_hline(linetype = "dashed", yintercept = 0) +
-  labs(x = "Predictor", y = "Coefficient distribution")
+  labs(x = "Predictor", y = "Coefficient distribution", title = "Figure 3: Coefficient boxplots from linear modeling")
 ggsave("coefficient_predictors.png")
 
 #Only PC1/PC2 seems to have coefficients significantly different from 0 consistently

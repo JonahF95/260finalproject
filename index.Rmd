@@ -143,9 +143,11 @@ error rates and perhaps improving the predictive power of poly-epigenetic scores
 
 **Table 1: Initial sample information data table**
 
-```{r, echo = F}
+![](./odatsc.png)
+
+```{r, echo = F, eval = F}
 d <- fread("origdat.csv") 
-datatable(d) 
+gt(d) %>% gtsave("odatsc.png", vwidth = 1000, vheight = 13000)
 ```
 
 ![Figure 1](./sexcheck.png)  
@@ -154,9 +156,11 @@ datatable(d)
 
 **Table 2: Quality control augmented sample data table**
 
-```{r, echo = F}
+![](./pdat.png)
+
+```{r, echo = F, eval = F}
 pd <- fread("pdqc.csv") 
-datatable(pd %>% round(4))
+gt(pd)
 ```
 
 ![](./coefficient_predictors.png)
@@ -166,17 +170,253 @@ datatable(pd %>% round(4))
 
 ![](./sdvsrmse.png)
 
-## Code 
+## Code{.tabset}
 
-All of the code for this project can be seen in cleaner formatting in the other pages linked at the 
-top of the website. Here is a __cat__ printout of the 3 rmarkdown code files.
-
-```{bash, echo = F}
-cat getdata.rmd
-cat qc.rmd
-cat analysis.Rmd
+```{r, eval = T, echo = F}
+knitr::opts_chunk$set(eval = F, echo = T)
 ```
 
+### Data Acquisition
+
+```{r get data together}
+url <- "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE61496"
+l <- read_html(url)
+l <- l %>% html_text %>% str_split("\n") %>% unlist
+idx <- str_detect(l, "_[A|B|C|D|E]") %>% which
+
+dat <- data.table(
+  id = l[idx - 1],
+  num = l[idx]
+)
+
+dat[, c("num", "orig") := tstrsplit(num, "_")]
+setkey(dat, num)
+fwrite(dat, "origdat.csv")
+
+gt(dat) %>% gtsave("origdat.png")
+```
+
+```{r get idats}
+if(!dir.exists("idats")){
+  dir.create("idats")
+}
+
+#Where this series is located
+repourl <- "https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1506nnn/"
+
+if(length(list.files("idats")) < dat[, 2*length(id)]){ #A tiny bit hackish control flow
+  for(i in dat[, id]){
+  #Need to grab more info on name of sample to download
+    ftplines <- paste0(repourl, i, "/suppl/") %>% readLines() 
+  
+  #Get red and green idat file locations
+    idatnames <- ftplines[str_detect(ftplines, "\\.idat\\.gz")] %>% tstrsplit('\\"', keep = 2) %>% unlist
+      paste0(repourl, i, "/suppl/", idatnames[[1]]) %>% 
+      download.file(destfile = paste0("idats/",idatnames[[1]]))
+    
+      paste0(repourl, i, "/suppl/", idatnames[[2]]) %>% 
+      download.file(destfile = paste0("idats/",idatnames[[2]]))
+  }
+}
+```
+
+```{r, eval = F}
+s <- readLines("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1506327")
+biosex <- map(dat[, id], function(acc){
+  readLines(paste0("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=", acc)) %>%
+  str_extract("sex, 1=m, 2=f: \\d") %>%
+  .[!is.na(.)] %>% 
+  str_split("") %>% 
+  unlist() %>% 
+  tail(n=1)
+})
+
+dat[, sex := c("m", "f")[unlist(biosex) %>% as.numeric]]
+
+fwrite(dat, "samplesheet.csv")
+```
+
+### Quality control
+
+```{r load in data}
+dat <- fread("samplesheet.csv")
+
+if(!dir.exists("pp")){
+  dir.create("pp")
+}
+```
+
+```{r read in idats, warning = F}
+if(!file.exists("pp/meth.rds")){
+  idats <- list.files("idats/", full.names = T, pattern = "\\.idat.gz$") %>%
+    str_remove("_(Grn|Red)\\.idat\\.gz") %>%
+    unique 
+
+  indmatch <- match(dat[, id], idats %>% str_extract("GSM[\\d]*"))
+  idats <- idats[indmatch]
+
+  meth <- read_idats(idats) %>% detectionP
+  stopifnot(dat[, id] == str_extract(meth$meta$sample_id, "GSM[\\d]*"))
+  saveRDS(meth, "pp/meth.rds")
+}
+```
+
+```{r preprocess}
+#Get SNP probes for genotyping
+meth <- readRDS("pp/meth.rds")
+mani <- ewastools:::manifest_450K
+snps <- mani[probe_type == "rs", probe_id]
+geno <- call_genotypes(meth %>% mask(0.01) %>% dont_normalize %>% .[snps,])
+
+dat[, c("x", "y") := check_sex(meth)]
+
+dat[, missing := colMeans(meth$detP, na.rm = T)]
+
+dat[, u := colMedians(meth$U, na.rm = T) %>% log2]
+dat[, m := colMedians(meth$M, na.rm = T) %>% log2]
+```
+
+```{r check reported sex}
+ggplot(dat, aes(x = x, y = y, color = sex)) +
+  geom_point(size = 1.5) +
+  labs(x = "X chromosome intensity", y= "Y chromosome intensity", color = "Reported sex",
+       title = "Figure 1: Reported sex with sex chromosome expression levels") +
+  theme(legend.position = "bottom") +
+  scale_color_aaas()
+
+ggsave("sexcheck.png")
+```
+
+```{r methylation intensity}
+ggplot(dat, aes(x = m, y = u)) +
+  geom_point() + 
+  labs(x = "Methylated intensity", y = "Unmethylated intensity",
+       title = "Median intensities on log2 scale")
+```
+
+```{r detp fail}
+ggplot(dat, aes(x = missing)) +
+  geom_histogram(color = "black", fill = "grey", bins = 4) +
+  labs(x = "Average probe failure for sample")
+```
+
+```{r genotype agreement}
+check_snp_agreement(geno, dat[, num], dat[, id])
+```
+
+```{r get beta}
+beta <- meth %>% dont_normalize()
+```
+
+```{r cell type proportions}
+cells <- estimateLC(beta, ref = "Salas")
+cellpc1 <- prcomp(cells)$x[, 1]
+dat[, cellpc := cellpc1]
+```
+
+```{r pcs on beta}
+whichna <- which(is.na(beta), arr.ind = T)
+beta[whichna] <- rowMeans(beta, na.rm = T)[whichna[, 1]]
+pcs <- beta %>% t %>% prcomp
+dat <- data.table(dat, pcs$x[, 1:5])
+```
+
+```{r plot pcs}
+ggplot(dat, aes(PC1, PC2, 
+                color = cut(cellpc1, 3) %>% as.factor %>% as.integer %>% as.factor)) +
+  geom_point() +
+  labs(color = "Tertile of cell PC") +
+  theme(legend.position = "bottom") +
+  scale_color_aaas()
+```
+
+```{r pcs with slide}
+dat[, slide := tstrsplit(colnames(beta), "_", keep = 2)]
+
+ggplot(dat, aes(x = PC1, y = PC2, color = as.factor(slide))) +
+  geom_point() +
+  labs(color = "Slide", title = "Figure 2: Principal components of expression data with sample slide") +
+  scale_color_aaas()
+
+ggsave("pcs_by_slide.png")
+```
+
+```{r save dat}
+fwrite(dat, "pdqc.csv")
+```
+
+### Analyses
+
+```{r load data}
+dat <- fread("pdqc.csv")
+meth <- readRDS("pp/meth.rds")
+```
+
+```{r matrix of predictors}
+# Predictor matrix to perform PCA on
+xmat <- do.call("rbind", list(meth$ctrlG, meth$ctrlN, meth$ctrlR)) %>% t
+colnames(xmat) <- c(paste0("ctrlg", 1:850), paste0("ctrln", 1:850), paste0("ctrlr", 1:850))
+missmat <- which(is.na(xmat), arr.ind = T)
+xmat[missmat] <- rowMeans(xmat, na.rm = T)[missmat[, 1]]
+xpc <- prcomp(xmat)
+
+#M values for outcome
+m <- meth %>% dont_normalize() %>% wateRmelon::Beta2M()
+centm <- m %>% t %>% scale(scale = F) %>% t
+```
+
+```{r predict values}
+set.seed(260)
+irow <- sample(65:nrow(centm), size = 1000)
+lmout <- list()
+for(i in irow){
+  lmout[[paste0("row", i)]] <- lm(y ~ ., data = data.table(y = centm[i,], x = xpc$x[, 1:10]))
+}
+```
+
+```{r get coefficients}
+coefdt <- map(lmout, ~coef(.x)[2:11]) %>% do.call("rbind", .) %>% data.table
+colnames(coefdt) <- str_extract(colnames(coefdt), "PC\\d*")
+coefdt <- melt(coefdt)
+
+ggplot(coefdt, aes(x = variable, y = value)) +
+  geom_boxplot() +
+  geom_hline(linetype = "dashed", yintercept = 0) +
+  labs(x = "Predictor", y = "Coefficient distribution", title = "Figure 3: Coefficient boxplots from linear modeling")
+ggsave("coefficient_predictors.png")
+
+#Only PC1/PC2 seems to have coefficients significantly different from 0 consistently
+t.test(coefdt[variable == "PC1", value])
+t.test(coefdt[variable == "PC2", value])
+
+coefdt[, t.test(value), by = variable]
+```
+
+```{r get significance}
+sigdt <- map(lmout, ~summary(.x)$coefficients[-1, 3]) %>% do.call("rbind", .) %>% data.table
+colnames(sigdt) <- str_extract(colnames(sigdt), "PC\\d*")
+sigdt <- melt(sigdt)
+
+ggplot(sigdt, aes(x = variable, y = value)) +
+  geom_boxplot() +
+  geom_hline(lty = "dashed", yintercept = 0) +
+  labs(x = "Predictor", y = "Test statistic distribution", title = "Figure 3: Coefficient boxplots from linear modeling")
+ggsave("tstat.png")
+
+# t.test(sigdt[variable == "PC1", value])
+# t.test(sigdt[variable == "PC2", value])
+sigdt[, t.test(value), by = variable]
+```
+
+```{r get r2}
+r2 <- map(lmout, ~summary(.x)$r.squared) %>% data.table
+
+ggplot(r2, aes(x = unlist(.))) +
+  geom_histogram(bins = 20, color = "black", fill = "grey") +
+  labs(x = "Multiple R2 values", title = "Figure 4: R squared values from linear modeling")
+ggsave("rsq.png")
+
+```
 
 ## References
 

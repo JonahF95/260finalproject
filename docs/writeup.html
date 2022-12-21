@@ -2150,7 +2150,12 @@ quality control metrics</p></p>
 <li><a href="#appendix" id="toc-appendix">Appendix</a>
 <ul>
 <li><a href="#figures" id="toc-figures">Figures</a></li>
-<li><a href="#code" id="toc-code">Code</a></li>
+<li><a href="#code" id="toc-code">Code</a>
+<ul>
+<li><a href="#data-acquisition" id="toc-data-acquisition">Data Acquisition</a></li>
+<li><a href="#quality-control" id="toc-quality-control">Quality control</a></li>
+<li><a href="#analyses" id="toc-analyses">Analyses</a></li>
+</ul></li>
 <li><a href="#references" id="toc-references">References</a></li>
 </ul></li>
 </ul>
@@ -2256,6 +2261,7 @@ error rates and perhaps improving the predictive power of poly-epigenetic scores
 <figcaption aria-hidden="true">Image 1</figcaption>
 </figure>
 <p><strong>Table 1: Initial sample information data table</strong></p>
+<p><img src="odatsc.png" /></p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
@@ -2268,17 +2274,276 @@ error rates and perhaps improving the predictive power of poly-epigenetic scores
 <figcaption aria-hidden="true">Figure 2</figcaption>
 </figure>
 <p><strong>Table 2: Quality control augmented sample data table</strong></p>
+<p><img src="pdat.png" /></p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
 <p><img src="coefficient_predictors.png" /></p>
 <p><img src="rsq.png" /></p>
 <p><img src="sdvsrmse.png" /></p>
-<h2 id="code">Code</h2>
-<p>All of the code for this project can be seen in cleaner formatting in the other pages linked at the
-top of the website. Here is a <strong>cat</strong> printout of the 3 rmarkdown code files.</p>
+<h2 class="tabset" id="code">Code</h2>
 <div class="layout-chunk" data-layout="l-body">
 
+</div>
+<h3 id="data-acquisition">Data Acquisition</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>url</span> <span class='op'>&lt;-</span> <span class='st'>"https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE61496"</span></span>
+<span><span class='va'>l</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://xml2.r-lib.org/reference/read_xml.html'>read_html</a></span><span class='op'>(</span><span class='va'>url</span><span class='op'>)</span></span>
+<span><span class='va'>l</span> <span class='op'>&lt;-</span> <span class='va'>l</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>html_text</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_split.html'>str_split</a></span><span class='op'>(</span><span class='st'>"\n"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>unlist</span></span>
+<span><span class='va'>idx</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_detect.html'>str_detect</a></span><span class='op'>(</span><span class='va'>l</span>, <span class='st'>"_[A|B|C|D|E]"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>which</span></span>
+<span></span>
+<span><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span><span class='op'>(</span></span>
+<span>  id <span class='op'>=</span> <span class='va'>l</span><span class='op'>[</span><span class='va'>idx</span> <span class='op'>-</span> <span class='fl'>1</span><span class='op'>]</span>,</span>
+<span>  num <span class='op'>=</span> <span class='va'>l</span><span class='op'>[</span><span class='va'>idx</span><span class='op'>]</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>dat</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"num"</span>, <span class='st'>"orig"</span><span class='op'>)</span> <span class='op'>:=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/tstrsplit.html'>tstrsplit</a></span><span class='op'>(</span><span class='va'>num</span>, <span class='st'>"_"</span><span class='op'>)</span><span class='op'>]</span></span>
+<span><span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/setkey.html'>setkey</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='va'>num</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fwrite.html'>fwrite</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='st'>"origdat.csv"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://gt.rstudio.com/reference/gt.html'>gt</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://gt.rstudio.com/reference/gtsave.html'>gtsave</a></span><span class='op'>(</span><span class='st'>"origdat.png"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.exists</a></span><span class='op'>(</span><span class='st'>"idats"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span><span class='op'>(</span><span class='st'>"idats"</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span>
+<span></span>
+<span><span class='co'>#Where this series is located</span></span>
+<span><span class='va'>repourl</span> <span class='op'>&lt;-</span> <span class='st'>"https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1506nnn/"</span></span>
+<span></span>
+<span><span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span><span class='op'>(</span><span class='st'>"idats"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>&lt;</span> <span class='va'>dat</span><span class='op'>[</span>, <span class='fl'>2</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>id</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span><span class='op'>{</span> <span class='co'>#A tiny bit hackish control flow</span></span>
+<span>  <span class='kw'>for</span><span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span><span class='op'>)</span><span class='op'>{</span></span>
+<span>  <span class='co'>#Need to grab more info on name of sample to download</span></span>
+<span>    <span class='va'>ftplines</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>repourl</span>, <span class='va'>i</span>, <span class='st'>"/suppl/"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='op'>)</span> </span>
+<span>  </span>
+<span>  <span class='co'>#Get red and green idat file locations</span></span>
+<span>    <span class='va'>idatnames</span> <span class='op'>&lt;-</span> <span class='va'>ftplines</span><span class='op'>[</span><span class='fu'><a href='https://stringr.tidyverse.org/reference/str_detect.html'>str_detect</a></span><span class='op'>(</span><span class='va'>ftplines</span>, <span class='st'>"\\.idat\\.gz"</span><span class='op'>)</span><span class='op'>]</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/tstrsplit.html'>tstrsplit</a></span><span class='op'>(</span><span class='st'>'\\"'</span>, keep <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>unlist</span></span>
+<span>      <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>repourl</span>, <span class='va'>i</span>, <span class='st'>"/suppl/"</span>, <span class='va'>idatnames</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>      <span class='fu'><a href='https://rdrr.io/r/utils/download.file.html'>download.file</a></span><span class='op'>(</span>destfile <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"idats/"</span>,<span class='va'>idatnames</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>    </span>
+<span>      <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>repourl</span>, <span class='va'>i</span>, <span class='st'>"/suppl/"</span>, <span class='va'>idatnames</span><span class='op'>[[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>      <span class='fu'><a href='https://rdrr.io/r/utils/download.file.html'>download.file</a></span><span class='op'>(</span>destfile <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"idats/"</span>,<span class='va'>idatnames</span><span class='op'>[[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>  <span class='op'>}</span></span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='st'>"https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1506327"</span><span class='op'>)</span></span>
+<span><span class='va'>biosex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>acc</span><span class='op'>)</span><span class='op'>{</span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="</span>, <span class='va'>acc</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_extract.html'>str_extract</a></span><span class='op'>(</span><span class='st'>"sex, 1=m, 2=f: \\d"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='va'>.</span><span class='op'>[</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span><span class='op'>]</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_split.html'>str_split</a></span><span class='op'>(</span><span class='st'>""</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span>n<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span></span>
+<span><span class='op'>}</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>sex</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"m"</span>, <span class='st'>"f"</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='va'>biosex</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>as.numeric</span><span class='op'>]</span><span class='op'>]</span></span>
+<span></span>
+<span><span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fwrite.html'>fwrite</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='st'>"samplesheet.csv"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h3 id="quality-control">Quality control</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fread.html'>fread</a></span><span class='op'>(</span><span class='st'>"samplesheet.csv"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.exists</a></span><span class='op'>(</span><span class='st'>"pp"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span><span class='op'>(</span><span class='st'>"pp"</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='st'>"pp/meth.rds"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span></span>
+<span>  <span class='va'>idats</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span><span class='op'>(</span><span class='st'>"idats/"</span>, full.names <span class='op'>=</span> <span class='cn'>T</span>, pattern <span class='op'>=</span> <span class='st'>"\\.idat.gz$"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>    <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_remove.html'>str_remove</a></span><span class='op'>(</span><span class='st'>"_(Grn|Red)\\.idat\\.gz"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>    <span class='va'>unique</span> </span>
+<span></span>
+<span>  <span class='va'>indmatch</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/match.html'>match</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span>, <span class='va'>idats</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_extract.html'>str_extract</a></span><span class='op'>(</span><span class='st'>"GSM[\\d]*"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>  <span class='va'>idats</span> <span class='op'>&lt;-</span> <span class='va'>idats</span><span class='op'>[</span><span class='va'>indmatch</span><span class='op'>]</span></span>
+<span></span>
+<span>  <span class='va'>meth</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/read_idats.html'>read_idats</a></span><span class='op'>(</span><span class='va'>idats</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>detectionP</span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span> <span class='op'>==</span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_extract.html'>str_extract</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>meta</span><span class='op'>$</span><span class='va'>sample_id</span>, <span class='st'>"GSM[\\d]*"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>saveRDS</a></span><span class='op'>(</span><span class='va'>meth</span>, <span class='st'>"pp/meth.rds"</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#Get SNP probes for genotyping</span></span>
+<span><span class='va'>meth</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='st'>"pp/meth.rds"</span><span class='op'>)</span></span>
+<span><span class='va'>mani</span> <span class='op'>&lt;-</span> <span class='fu'>ewastools</span><span class='fu'>:::</span><span class='va'>manifest_450K</span></span>
+<span><span class='va'>snps</span> <span class='op'>&lt;-</span> <span class='va'>mani</span><span class='op'>[</span><span class='va'>probe_type</span> <span class='op'>==</span> <span class='st'>"rs"</span>, <span class='va'>probe_id</span><span class='op'>]</span></span>
+<span><span class='va'>geno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/call_genotypes.html'>call_genotypes</a></span><span class='op'>(</span><span class='va'>meth</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/detectionP.html'>mask</a></span><span class='op'>(</span><span class='fl'>0.01</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>dont_normalize</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>.</span><span class='op'>[</span><span class='va'>snps</span>,<span class='op'>]</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>dat</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x"</span>, <span class='st'>"y"</span><span class='op'>)</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/check_sex.html'>check_sex</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>)</span><span class='op'>]</span></span>
+<span></span>
+<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>missing</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>colMeans</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>detP</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span><span class='op'>]</span></span>
+<span></span>
+<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>u</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/pkg/matrixStats/man/rowMedians.html'>colMedians</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>U</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>log2</span><span class='op'>]</span></span>
+<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>m</span> <span class='op'>:=</span> <span class='fu'><a href='https://rdrr.io/pkg/matrixStats/man/rowMedians.html'>colMedians</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>M</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>log2</span><span class='op'>]</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x</span>, y <span class='op'>=</span> <span class='va'>y</span>, color <span class='op'>=</span> <span class='va'>sex</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>1.5</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"X chromosome intensity"</span>, y<span class='op'>=</span> <span class='st'>"Y chromosome intensity"</span>, color <span class='op'>=</span> <span class='st'>"Reported sex"</span>,</span>
+<span>       title <span class='op'>=</span> <span class='st'>"Figure 1: Reported sex with sex chromosome expression levels"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"bottom"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggsave</a></span><span class='op'>(</span><span class='st'>"sexcheck.png"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>m</span>, y <span class='op'>=</span> <span class='va'>u</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Methylated intensity"</span>, y <span class='op'>=</span> <span class='st'>"Unmethylated intensity"</span>,</span>
+<span>       title <span class='op'>=</span> <span class='st'>"Median intensities on log2 scale"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>missing</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"black"</span>, fill <span class='op'>=</span> <span class='st'>"grey"</span>, bins <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Average probe failure for sample"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/check_snp_agreement.html'>check_snp_agreement</a></span><span class='op'>(</span><span class='va'>geno</span>, <span class='va'>dat</span><span class='op'>[</span>, <span class='va'>num</span><span class='op'>]</span>, <span class='va'>dat</span><span class='op'>[</span>, <span class='va'>id</span><span class='op'>]</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>beta</span> <span class='op'>&lt;-</span> <span class='va'>meth</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/Preprocessing.html'>dont_normalize</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>cells</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/cell_composition.html'>estimateLC</a></span><span class='op'>(</span><span class='va'>beta</span>, ref <span class='op'>=</span> <span class='st'>"Salas"</span><span class='op'>)</span></span>
+<span><span class='va'>cellpc1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/prcomp.html'>prcomp</a></span><span class='op'>(</span><span class='va'>cells</span><span class='op'>)</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span>, <span class='fl'>1</span><span class='op'>]</span></span>
+<span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>cellpc</span> <span class='op'>:=</span> <span class='va'>cellpc1</span><span class='op'>]</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>whichna</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>beta</span><span class='op'>)</span>, arr.ind <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></span>
+<span><span class='va'>beta</span><span class='op'>[</span><span class='va'>whichna</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowMeans</a></span><span class='op'>(</span><span class='va'>beta</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span><span class='op'>[</span><span class='va'>whichna</span><span class='op'>[</span>, <span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
+<span><span class='va'>pcs</span> <span class='op'>&lt;-</span> <span class='va'>beta</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>t</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>prcomp</span></span>
+<span><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='va'>pcs</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>PC1</span>, <span class='va'>PC2</span>, </span>
+<span>                color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>cellpc1</span>, <span class='fl'>3</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>as.factor</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>as.integer</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>as.factor</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"Tertile of cell PC"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></span><span class='op'>(</span>legend.position <span class='op'>=</span> <span class='st'>"bottom"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>dat</span><span class='op'>[</span>, <span class='va'>slide</span> <span class='op'>:=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/tstrsplit.html'>tstrsplit</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>beta</span><span class='op'>)</span>, <span class='st'>"_"</span>, keep <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>]</span></span>
+<span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>PC1</span>, y <span class='op'>=</span> <span class='va'>PC2</span>, color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>slide</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"Slide"</span>, title <span class='op'>=</span> <span class='st'>"Figure 2: Principal components of expression data with sample slide"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://nanx.me/ggsci/reference/scale_aaas.html'>scale_color_aaas</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggsave</a></span><span class='op'>(</span><span class='st'>"pcs_by_slide.png"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fwrite.html'>fwrite</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='st'>"pdqc.csv"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h3 id="analyses">Analyses</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/fread.html'>fread</a></span><span class='op'>(</span><span class='st'>"pdqc.csv"</span><span class='op'>)</span></span>
+<span><span class='va'>meth</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='st'>"pp/meth.rds"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Predictor matrix to perform PCA on</span></span>
+<span><span class='va'>xmat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='st'>"rbind"</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>meth</span><span class='op'>$</span><span class='va'>ctrlG</span>, <span class='va'>meth</span><span class='op'>$</span><span class='va'>ctrlN</span>, <span class='va'>meth</span><span class='op'>$</span><span class='va'>ctrlR</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>t</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>xmat</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"ctrlg"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>850</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"ctrln"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>850</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"ctrlr"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>850</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='va'>missmat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>xmat</span><span class='op'>)</span>, arr.ind <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></span>
+<span><span class='va'>xmat</span><span class='op'>[</span><span class='va'>missmat</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowMeans</a></span><span class='op'>(</span><span class='va'>xmat</span>, na.rm <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span><span class='op'>[</span><span class='va'>missmat</span><span class='op'>[</span>, <span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
+<span><span class='va'>xpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/prcomp.html'>prcomp</a></span><span class='op'>(</span><span class='va'>xmat</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'>#M values for outcome</span></span>
+<span><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='va'>meth</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/ewastools/man/Preprocessing.html'>dont_normalize</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'>wateRmelon</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/wateRmelon/man/Beta2M.html'>Beta2M</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span><span class='va'>centm</span> <span class='op'>&lt;-</span> <span class='va'>m</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>t</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/scale.html'>scale</a></span><span class='op'>(</span>scale <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>t</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>260</span><span class='op'>)</span></span>
+<span><span class='va'>irow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>65</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>centm</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span></span>
+<span><span class='va'>lmout</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span><span class='kw'>for</span><span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='va'>irow</span><span class='op'>)</span><span class='op'>{</span></span>
+<span>  <span class='va'>lmout</span><span class='op'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"row"</span>, <span class='va'>i</span><span class='op'>)</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>centm</span><span class='op'>[</span><span class='va'>i</span>,<span class='op'>]</span>, x <span class='op'>=</span> <span class='va'>xpc</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>coefdt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map</a></span><span class='op'>(</span><span class='va'>lmout</span>, <span class='op'>~</span><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>.x</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>11</span><span class='op'>]</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='st'>"rbind"</span>, <span class='va'>.</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>data.table</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>coefdt</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_extract.html'>str_extract</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>coefdt</span><span class='op'>)</span>, <span class='st'>"PC\\d*"</span><span class='op'>)</span></span>
+<span><span class='va'>coefdt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/melt.data.table.html'>melt</a></span><span class='op'>(</span><span class='va'>coefdt</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>coefdt</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>variable</span>, y <span class='op'>=</span> <span class='va'>value</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_boxplot.html'>geom_boxplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span>linetype <span class='op'>=</span> <span class='st'>"dashed"</span>, yintercept <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Predictor"</span>, y <span class='op'>=</span> <span class='st'>"Coefficient distribution"</span>, title <span class='op'>=</span> <span class='st'>"Figure 3: Coefficient boxplots from linear modeling"</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggsave</a></span><span class='op'>(</span><span class='st'>"coefficient_predictors.png"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'>#Only PC1/PC2 seems to have coefficients significantly different from 0 consistently</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/stats/t.test.html'>t.test</a></span><span class='op'>(</span><span class='va'>coefdt</span><span class='op'>[</span><span class='va'>variable</span> <span class='op'>==</span> <span class='st'>"PC1"</span>, <span class='va'>value</span><span class='op'>]</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/stats/t.test.html'>t.test</a></span><span class='op'>(</span><span class='va'>coefdt</span><span class='op'>[</span><span class='va'>variable</span> <span class='op'>==</span> <span class='st'>"PC2"</span>, <span class='va'>value</span><span class='op'>]</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>coefdt</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/stats/t.test.html'>t.test</a></span><span class='op'>(</span><span class='va'>value</span><span class='op'>)</span>, by <span class='op'>=</span> <span class='va'>variable</span><span class='op'>]</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>sigdt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map</a></span><span class='op'>(</span><span class='va'>lmout</span>, <span class='op'>~</span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>.x</span><span class='op'>)</span><span class='op'>$</span><span class='va'>coefficients</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>]</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='st'>"rbind"</span>, <span class='va'>.</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>data.table</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>sigdt</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_extract.html'>str_extract</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>sigdt</span><span class='op'>)</span>, <span class='st'>"PC\\d*"</span><span class='op'>)</span></span>
+<span><span class='va'>sigdt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/melt.data.table.html'>melt</a></span><span class='op'>(</span><span class='va'>sigdt</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>sigdt</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>variable</span>, y <span class='op'>=</span> <span class='va'>value</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_boxplot.html'>geom_boxplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span>lty <span class='op'>=</span> <span class='st'>"dashed"</span>, yintercept <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Predictor"</span>, y <span class='op'>=</span> <span class='st'>"Test statistic distribution"</span>, title <span class='op'>=</span> <span class='st'>"Figure 3: Coefficient boxplots from linear modeling"</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggsave</a></span><span class='op'>(</span><span class='st'>"tstat.png"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># t.test(sigdt[variable == "PC1", value])</span></span>
+<span><span class='co'># t.test(sigdt[variable == "PC2", value])</span></span>
+<span><span class='va'>sigdt</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/stats/t.test.html'>t.test</a></span><span class='op'>(</span><span class='va'>value</span><span class='op'>)</span>, by <span class='op'>=</span> <span class='va'>variable</span><span class='op'>]</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>r2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map</a></span><span class='op'>(</span><span class='va'>lmout</span>, <span class='op'>~</span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>.x</span><span class='op'>)</span><span class='op'>$</span><span class='va'>r.squared</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='va'>data.table</span></span>
+<span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>r2</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>bins <span class='op'>=</span> <span class='fl'>20</span>, color <span class='op'>=</span> <span class='st'>"black"</span>, fill <span class='op'>=</span> <span class='st'>"grey"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Multiple R2 values"</span>, title <span class='op'>=</span> <span class='st'>"Figure 4: R squared values from linear modeling"</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggsave</a></span><span class='op'>(</span><span class='st'>"rsq.png"</span><span class='op'>)</span></span></code></pre>
+</div>
 </div>
 <h2 id="references">References</h2>
 <p>Tan Q, Frost M, Heijmans BT, von Bornemann Hjelmborg J, Tobi EW, Christensen K, Christiansen L. Epigenetic signature of birth weight discordance in adult twins. BMC Genomics. 2014 Dec 4;15(1):1062. doi: 10.1186/1471-2164-15-1062. PMID: 25476734; PMCID: PMC4302120.</p>
